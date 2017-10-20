@@ -7,7 +7,7 @@ CustomSteven = CreateFrame("Frame");
 CustomSteven:SetScript("OnUpdate", function(self, elapsed) CustomStevenOnUpdate(self, elapsed) end)
 CustomSteven:RegisterEvent("VARIABLES_LOADED");
 
-botNames = {"Jen"};
+botNames = {"Fourchan","Greenones","Removekebabs","Thisisbrazil"};
 StevenBotFrame = {};
 StevenBotFrame.acceptDelayTimer = 0;
 
@@ -96,7 +96,7 @@ local myName = UnitName("Player");
 if (isPlayingOnBot(myName)) then
 
 --check if he not in a group
-if (UnitName("party4") ~= nil) then return end;--full party.
+if (isBotLeader(myName) == false) then return end;--full party.
 local numGuildMembers, numOnline, numOnlineAndMobile = GetNumGuildMembers()
 for index=1,numOnline do 
 local fullName, rank, rankIndex, level, class, zone, note, officernote, online, status, classFileName, achievementPoints, achievementRank, isMobile, canSoR, reputation = GetGuildRosterInfo(index) 
@@ -131,7 +131,9 @@ end--end function CustomStevenOnUpdate
 
 
 
-
+function isBotLeader(name)
+return name == "Fourchan";
+end
 
 function isPlayingOnBot(name)
 for _,bname in pairs(botNames) do if (bname == name) then return true end end 
@@ -143,7 +145,8 @@ function StevenEventPlease:PARTY_INVITE_REQUEST(info,sender)
 StevenPrint("received a party invite request");
 if (isPlayingOnBot(sender)) then
 AcceptGroup();
-StevenPrint("accepting bot invite now");
+else
+DeclineGroup();
 end
 
 end--end function accepttheinvite
