@@ -10,9 +10,26 @@ CustomSteven:RegisterEvent("VARIABLES_LOADED");
 botNames = {"Fourchan","Greenones","Removekebabs","Thisisbrazil"};
 StevenBotFrame = {};
 StevenBotFrame.acceptDelayTimer = 0;
+StevenBotFrame.depositingState = false;
 
 function CustomStevenIncoming(ChatFrameSelf, event, msg, author, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9)
   
+  namae = CustomStevenSplitString(author,"-")[1];
+  if (isPlayingOnBot(namae) == true ) then
+  if (msg == "help") then
+  StevenPrint("---HELP LISTING---")
+  StevenPrint(" depositDo")
+  StevenPrint(" depositStop")
+  end--end if help
+  if (msg == "depositDo") then
+  StevenBotFrame.depositingState = true;
+  
+  end--end if do
+  if (msg == "depositStop") then
+  StevenBotFrame.depositingState = false;
+  
+  end--end if stop
+  end--end if valid guy
   
   return false, msg, author, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9 --substitute newMsg for msg when returning
 end--end function CustomStevenIncoming
@@ -94,8 +111,13 @@ end
 local myName = UnitName("Player");
 
 if (isPlayingOnBot(myName)) then
+if (StevenBotFrame.depositingState == true) then
+DepositGuildBankMoney(2500000)
+SendChatMessage("depositing okane " .. (GetMoney()/10000), "PARTY",nil);
+end
 
---check if he not in a group
+
+--do the invites; check if he not in a group
 if (isBotLeader(myName) == false) then return end;--full party.
 local numGuildMembers, numOnline, numOnlineAndMobile = GetNumGuildMembers()
 for index=1,numOnline do 
@@ -160,7 +182,11 @@ StevenEventPlease:SetScript("OnEvent",function(self,event,...) self[event](self,
 
 StevenPrint("steven custom addon running xd");
 local myName = UnitName("Player");
-ChatFrame_AddMessageEventFilter("CHAT_MSG_CHANNEL",CustomStevenIncoming);
+ChatFrame_AddMessageEventFilter("CHAT_MSG_WHISPER",CustomStevenIncoming);
+ChatFrame_AddMessageEventFilter("CHAT_MSG_SAY",CustomStevenIncoming);
+ChatFrame_AddMessageEventFilter("CHAT_MSG_GUILD",CustomStevenIncoming);
+ChatFrame_AddMessageEventFilter("CHAT_MSG_PARTY",CustomStevenIncoming);
+ChatFrame_AddMessageEventFilter("CHAT_MSG_PARTY_LEADER",CustomStevenIncoming);
 if (isPlayingOnBot(myName)) then
 StevenPrint("NOTE: you are playing on bot right now");
 end
