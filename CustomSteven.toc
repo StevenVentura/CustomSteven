@@ -1,0 +1,9 @@
+## Interface: 70100
+
+## Title: |cff88ff88custom steven addon
+
+## Notes: |cff22ffffcustom steven
+## SavedVariables: CustomStevenExample
+
+CustomSteven.xml
+CustomSteven.lua
