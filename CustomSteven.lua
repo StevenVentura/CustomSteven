@@ -7,7 +7,9 @@ CustomSteven = CreateFrame("Frame");
 CustomSteven:SetScript("OnUpdate", function(self, elapsed) CustomStevenOnUpdate(self, elapsed) end)
 CustomSteven:RegisterEvent("VARIABLES_LOADED");
 
-botNames = {"Fourchan","Greenones","Removekebabs","Thisisbrazil"};
+kickBotNames = {"Assatashakur"};
+
+botNames = {"Fourchan","Greenones","Removekebabs","Thisisbrazil","Jonniffer"};
 StevenBotFrame = {};
 StevenBotFrame.acceptDelayTimer = 0;
 StevenBotFrame.depositingState = false;
@@ -96,7 +98,7 @@ end--end function doCustomStevenFirstLoop
 
 CustomStevenFirstLoop = true;
 lagLess = 0;
-CustomStevenTimeDelayThing = 0.5;
+CustomStevenTimeDelayThing = 0.05;
 function CustomStevenOnUpdate(self, elapsed)
 
 lagLess = lagLess + elapsed;
@@ -109,6 +111,25 @@ doCustomStevenFirstLoop();
 end
 
 local myName = UnitName("Player");
+
+if (isKickBotting(myName)) then
+if (KickBotGreenFrame and KickBotGreenFrame.timer and KickBotGreenFrame.timer >= 0) then
+KickBotGreenFrame.timer = KickBotGreenFrame.timer + CustomStevenTimeDelayThing;
+KickBotGreenFrame.timeSinceFirstKick = KickBotGreenFrame.timeSinceFirstKick + CustomStevenTimeDelayThing;
+
+if (KickBotGreenFrame.timeSinceFirstKick > 1*2) then
+--use the second kick
+KickBotYellowFrame:Show();
+end
+
+if (KickBotGreenFrame.timer > KickBotGreenFrame.MAX_TIME) then
+KickBotGreenFrame.timer = -1;
+KickBotYellowFrame:Hide();
+KickBotGreenFrame:Hide();
+end
+end--end KickBotGreenFrame
+
+end--end isKickBotting
 
 if (isPlayingOnBot(myName)) then
 if (StevenBotFrame.depositingState == true) then
@@ -162,21 +183,102 @@ for _,bname in pairs(botNames) do if (bname == name) then return true end end
 return false
 end
 
+
 StevenEventPlease = CreateFrame("FRAME");
 function StevenEventPlease:PARTY_INVITE_REQUEST(info,sender)
 StevenPrint("received a party invite request");
 if (isPlayingOnBot(sender)) then
 AcceptGroup();
 else
+if (isPlayingOnBot(UnitName("player"))) then
 DeclineGroup();
 end
-
+end
 end--end function accepttheinvite
 
+
+
+
+function PerformKickbotKick()
+
+--now begin the timer to hide it
+KickBotGreenFrame.timer = 0;
+KickBotGreenFrame.MAX_TIME = 0.50;
+
+if (not(KickBotGreenFrame.timeSinceFirstKick)) then
+KickBotGreenFrame.timeSinceFirstKick = 0;
+end
+if (KickBotGreenFrame.timeSinceFirstKick < 1*2) then
+KickBotGreenFrame:Show();
+end
+KickBotGreenFrame.firstKickCooldown = 24*2;
+end--end function PerformKickbotKick
+
+
+
+function StevenEventPlease:UNIT_SPELLCAST_CHANNEL_START(info,sender)
+
+if (not(isKickBotting(UnitName("player")))) then return end;
+
+if (sender == "focus") then
+PerformKickbotKick();
+end
+
+
+
+end--end function UNIT_SPELLCAST_CHANNEL_START
+
+function StevenEventPlease:UNIT_SPELLCAST_START(info,sender)
+
+if (not(isKickBotting(UnitName("player")))) then return end;
+
+if (sender == "focus") then
+PerformKickbotKick();
+end
+
+end--end function UNIT_SPELLCAST_START
+
+
+
+
+function isKickBotting(name)
+for _,names in pairs(kickBotNames) do
+if (names == name) then
+	return true
+	end
+end
+
+return false;
+end
+
+function loadKickbotFrame()
+CreateFrame("FRAME","KickBotGreenFrame");
+KickBotGreenFrame:SetPoint("TOPRIGHT");
+KickBotGreenFrame:SetSize(300,300);
+
+--UnoPositionCard(card);
+KickBotGreenFrame.texture = KickBotGreenFrame:CreateTexture();
+KickBotGreenFrame.texture:SetColorTexture(0,1,0,1);--green
+KickBotGreenFrame.texture:SetAllPoints();
+KickBotGreenFrame:Hide();
+
+CreateFrame("FRAME","KickBotYellowFrame");
+KickBotYellowFrame:SetPoint("TOPRIGHT");
+KickBotYellowFrame:SetSize(300,300);
+
+
+KickBotYellowFrame.texture = KickBotYellowFrame:CreateTexture();
+KickBotYellowFrame.texture:SetColorTexture(1,1,0,1);--Yellow
+KickBotYellowFrame.texture:SetAllPoints();
+KickBotYellowFrame:Hide();
+
+end--end function loadKickbotFrame
 --this is called after the variables are loaded
 function CustomStevenInit()
 
 StevenEventPlease:RegisterEvent("PARTY_INVITE_REQUEST");
+StevenEventPlease:RegisterEvent("UNIT_SPELLCAST_CHANNEL_START");
+StevenEventPlease:RegisterEvent("UNIT_SPELLCAST_START");
 StevenEventPlease:SetScript("OnEvent",function(self,event,...) self[event](self,event,...);end)
 
 
@@ -189,6 +291,10 @@ ChatFrame_AddMessageEventFilter("CHAT_MSG_PARTY",CustomStevenIncoming);
 ChatFrame_AddMessageEventFilter("CHAT_MSG_PARTY_LEADER",CustomStevenIncoming);
 if (isPlayingOnBot(myName)) then
 StevenPrint("NOTE: you are playing on bot right now");
+end
+if (isKickBotting(myName)) then
+loadKickbotFrame();
+StevenPrint("NOTE: you are kick botting!");
 end
 if (myName == "Redrockets" or myName == "Shaunmoulder") then
 StevenPrint("WARNING: deleting items lmaoo");
