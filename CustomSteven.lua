@@ -6,10 +6,19 @@ CustomSteven = CreateFrame("Frame");
 
 CustomSteven:SetScript("OnUpdate", function(self, elapsed) CustomStevenOnUpdate(self, elapsed) end)
 CustomSteven:RegisterEvent("VARIABLES_LOADED");
+CustomSteven:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED");
+CustomSteven:RegisterEvent("PLAYER_ENTERING_WORLD");
+CustomSteven:RegisterEvent("PLAYER_LOGIN");
+CustomSteven:RegisterEvent("UNIT_SPELLCAST_START");
+CustomSteven:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED");
+CustomSteven:RegisterEvent("UNIT_SPELLCAST_INTERRUPTED");
+CustomSteven:RegisterEvent("PLAYER_REGEN_DISABLED");--detect if combat
+---
+CustomSteven:RegisterEvent("UNIT_AURA")
 
 kickBotNames = {"Assatashakur"};
 
-botNames = {"Fourchan","Greenones","Removekebabs","Thisisbrazil","Jonniffer"};
+botNames = {"Assatashakur","Enrique","Jahmilli","Fourchan","Greenones","Removekebabs","Thisisbrazil","Jonniffer"};
 StevenBotFrame = {};
 StevenBotFrame.acceptDelayTimer = 0;
 StevenBotFrame.depositingState = false;
@@ -17,6 +26,9 @@ StevenBotFrame.depositingState = false;
 function CustomStevenIncoming(ChatFrameSelf, event, msg, author, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9)
   
   namae = CustomStevenSplitString(author,"-")[1];
+  if (string.find(msg, "your")) then
+  SendChatMessage("you're*","WHISPER",author)
+  end
   if (isPlayingOnBot(namae) == true ) then
   if (msg == "help") then
   StevenPrint("---HELP LISTING---")
@@ -96,6 +108,153 @@ end
 
 end--end function doCustomStevenFirstLoop
 
+CreateFrame("FRAME","CustomCancerColorBoy",UIParent);
+CustomCancerColorBoy:SetAllPoints();
+
+CustomCancerColorBoy.t = CustomCancerColorBoy:CreateTexture();
+CustomCancerColorBoy.t:SetAllPoints();
+CustomCancerColorBoy.theta = 0;
+function CustomStevenCancerColor() 
+CustomCancerColorBoy.theta = CustomCancerColorBoy.theta + 0.05;
+local theta = CustomCancerColorBoy.theta;
+local red = math.cos(theta);
+local blue = math.sin(theta)*math.cos(theta);
+local green = math.sin(theta);
+CustomCancerColorBoy.t:SetColorTexture(red,green,blue,0.50);
+
+
+end--end function CustomStevenCancerColor
+ZoomBoy = {};
+
+ZoomBoy.plus = false;
+
+function CustomStevenZoomCancer() 
+CustomStevenCancerColor();
+--[[local randy = math.random(1,4);
+if (randy == 1) then
+MoveViewUpStart(1);
+elseif (randy == 2) then
+MoveViewDownStart(1);
+elseif (randy == 3) then
+MoveViewLeftStart(1);
+elseif (randy == 4) then
+MoveViewRightStart(1);
+end]]
+
+MoveViewRightStart(5);
+
+if (math.random(1,5) == 1) then
+SetView(math.random(1,5));
+end
+if (ZoomBoy.plus == true) then
+CameraZoomIn(.5);
+
+if (GetCameraZoom() == 0) then
+ZoomBoy.plus = false;
+end
+else
+CameraZoomOut(.5);
+
+if (GetCameraZoom() == 39) then
+ZoomBoy.plus = true;
+end
+
+end
+
+
+
+
+end--end function CustomStevenZoomCancer
+function CustomStevenShowDMBoxes() 
+if (UnitExists("arena1") and StevenWhisperArena1Frame == nil) then
+
+CreateFrame("Button","StevenWhisperArena1Frame",GladiusTimerGladiusClassIconFramearena1,"UIPanelButtonTemplate");
+StevenWhisperArena1Frame:SetText("DM");
+StevenWhisperArena1Frame:SetSize(24,24);
+StevenWhisperArena1Frame:SetPoint("TOP",GladiusTimerGladiusClassIconFramearena1,"BOTTOM");
+StevenWhisperArena1Frame:SetScript("OnClick", function() 
+ChatFrame1EditBox:SetFocus();
+
+name,realm = UnitName("arena1");
+if (realm == nil) then
+completename = name
+else
+completename= name .. "-" .. realm;
+end
+ChatFrame1EditBox:SetText("/w " .. completename .. " ");
+end);
+StevenWhisperArena1Frame:Show();
+end-- end frame 1
+if (UnitExists("arena2") and StevenWhisperArena2Frame == nil) then
+CreateFrame("Button","StevenWhisperArena2Frame",GladiusTimerGladiusClassIconFramearena2,"UIPanelButtonTemplate");
+StevenWhisperArena2Frame:SetText("DM");
+StevenWhisperArena2Frame:SetSize(24,24);
+StevenWhisperArena2Frame:SetPoint("TOP",GladiusTimerGladiusClassIconFramearena2,"BOTTOM");
+StevenWhisperArena2Frame:SetScript("OnClick", function() 
+ChatFrame1EditBox:SetFocus();
+name,realm = UnitName("arena2");
+if (realm == nil) then
+completename = name
+else
+completename= name .. "-" .. realm;
+end
+ChatFrame1EditBox:SetText("/w " .. completename .. " ");
+end);
+StevenWhisperArena2Frame:Show();
+end--end frame 2
+if (UnitExists("arena3") and StevenWhisperArena3Frame == nil) then
+CreateFrame("Button","StevenWhisperArena3Frame",GladiusTimerGladiusClassIconFramearena3,"UIPanelButtonTemplate");
+StevenWhisperArena3Frame:SetText("DM");
+StevenWhisperArena3Frame:SetSize(24,24);
+StevenWhisperArena3Frame:SetPoint("TOP",GladiusTimerGladiusClassIconFramearena3,"BOTTOM");
+StevenWhisperArena3Frame:SetScript("OnClick", function() 
+ChatFrame1EditBox:SetFocus();
+name,realm = UnitName("arena3");
+if (realm == nil) then
+completename = name
+else
+completename= name .. "-" .. realm;
+end
+ChatFrame1EditBox:SetText("/w " .. completename .. " ");
+end);
+StevenWhisperArena3Frame:Show();
+end--end frame 3	
+
+end--end function CustomStevenShowDMBoxes
+
+function ShapeshiftNotify()
+
+
+
+
+end--end function ShapeshiftNotify
+
+CustomStevenTimeSincePairing = {["Fear"]=0,["Hammer of Justice"]=0,["Kidney Shot"]=0};
+
+function YellAtDaleForSac(elapsed) 
+
+for SPELLNAME,TIME in pairs(CustomStevenTimeSincePairing) do
+local name, rank, icon, count, debuffType, duration, expirationTime,
+ unitCaster, canStealOrPurge, nameplateShowPersonal, spellId, canApplyAura,
+ isBossDebuff, isCastByPlayer, nameplateShowAll, timeMod  = UnitAura("player",SPELLNAME);
+
+	if (name ~= nil and CustomStevenTimeSincePairing[SPELLNAME] > 5) then
+	CustomStevenTimeSincePairing[SPELLNAME] = 0;
+	--yell at dale
+	SendChatMessage("SAC " .. SPELLNAME .. time(), "YELL",nil);
+	
+	
+	else
+	CustomStevenTimeSincePairing[SPELLNAME] = CustomStevenTimeSincePairing[SPELLNAME] + elapsed;
+	end
+	
+	
+end--end for
+
+
+end--end function YellAtDaleForSac
+
+
 CustomStevenFirstLoop = true;
 lagLess = 0;
 CustomStevenTimeDelayThing = 0.05;
@@ -105,6 +264,20 @@ lagLess = lagLess + elapsed;
 if (lagLess < CustomStevenTimeDelayThing) then  return end
 lagLess = 0;
 --do stuff here
+-------
+--CustomStevenShowDMBoxes();
+
+-------
+--CustomStevenZoomCancer();
+YellAtDaleForSac(CustomStevenTimeDelayThing);
+updateEnemyTargetOfTargetLabels();
+ShapeshiftNotify();
+
+
+if (LFDRoleCheckPopupDeclineButton)
+then
+LFDRoleCheckPopupDeclineButton:Hide();
+end
 if (CustomStevenFirstLoop == true) then
 CustomStevenFirstLoop = false;
 doCustomStevenFirstLoop();
@@ -175,7 +348,7 @@ end--end function CustomStevenOnUpdate
 
 
 function isBotLeader(name)
-return name == "Fourchan";
+return name == "Jahmilli";
 end
 
 function isPlayingOnBot(name)
@@ -228,8 +401,9 @@ end
 
 end--end function UNIT_SPELLCAST_CHANNEL_START
 
-function StevenEventPlease:UNIT_SPELLCAST_START(info,sender)
+function StevenEventPlease:UNIT_SPELLCAST_START(...)
 
+CustomSteven:UNIT_SPELLCAST_START(...);
 if (not(isKickBotting(UnitName("player")))) then return end;
 
 if (sender == "focus") then
@@ -238,7 +412,129 @@ end
 
 end--end function UNIT_SPELLCAST_START
 
+function CustomSteven:UNIT_AURA(UnitId)--...) 
+local playeraffected = UnitName(UnitId);
 
+
+
+
+end--end function UNIT_AURA
+
+function CustomSteven:COMBAT_LOG_EVENT_UNFILTERED(timestamp, event, hideCaster, srcGUID, srcName, srcFlags, srcRaidFlags, destGUID, destName, destFlags, destRaidFlags, ...)
+--http://wowwiki.wikia.com/wiki/API_COMBAT_LOG_EVENT
+
+if (event == SPELL_AURA_APPLIED) then
+
+
+end
+
+end--end function eventunfiltered
+
+function CustomSteven:UNIT_SPELLCAST_SUCCEEDED(...) 
+spellCaster, spellName, _, spellCount = ...;
+
+end--end function CustomSteven:UNIT_SPELLCAST_SUCCEEDED
+
+function GetCustomStevenNameMapping(arenaboi)
+
+local outnumber = nil;
+local outname = nil;
+local p1 = UnitName("player");
+local p2 = UnitName("party1");
+local p3 = UnitName("party2");
+
+local pmap = {[1]="player",[2]="party1",[3]="party2"};
+for i,v in pairs(pmap) do
+if (UnitName(arenaboi .. "target") ~= nil and UnitName(v) ~= nil and 
+	UnitName(arenaboi .. "target") == UnitName(v)) then
+outnumber = i;
+outname = v;
+
+return outnumber, outname;
+end--end if
+
+end--end for
+
+
+
+
+
+
+
+end--end function GetCustomStevenNameMapping
+function updateEnemyTargetOfTargetLabels()
+isArena, isRegistered = IsActiveBattlefieldArena();
+if (isArena == nil) then return end
+
+local names = {"arena1","arena2","arena3"};
+local ours = {"player","party1","party2"};
+
+for index,value in pairs(names) do
+targetnumber = nil;
+targetname = nil;
+--determine name thing
+targetnumber, targetname = GetCustomStevenNameMapping(value);
+
+if (targetnumber ~= nil) then
+
+_G["numberlabel" .. index]:SetParent(_G["GladiusHighlightarena" .. index]);
+_G["numberlabel" .. index]:SetPoint("CENTER",_G["GladiusHighlightarena" .. index],"CENTER");
+_G["numberlabel" .. index].t:SetPoint("CENTER",_G["GladiusHighlightarena" .. index],"CENTER");
+_G["numberlabel" .. index].t:SetText(UnitName(targetname));
+_G["numberlabel" .. index]:Show();
+
+--_G["GladiusHealthBar" .. value]
+
+end
+end--end for
+
+
+
+
+end--end function updateEnemyTargetOfTargetLabels
+
+function CustomSteven:UNIT_SPELLCAST_START(...) 
+
+eventname_useless, spellCaster, spellName, _, spellCount = ...;
+
+isArena, isRegistered = IsActiveBattlefieldArena();
+isArena =1;
+--[[
+isArena 
+Integer - 1 if the player is inside an arena, nil if they aren't
+isRegistered 
+Integer - 1 if the player is playing a rated arena match, nil if they aren't
+]]
+
+
+if (isArena) then
+local spellNamesToCheck = {[1]="Repentance",[2]="Fear",[3]="Polymorph",[4]="Cyclone"};
+local spellColors = {[1]="|cffffffff",[2]="|cffff00ff",[3]="|cff00ff00",[4]="|cffff8800"};
+
+local enemyArenaIndex = nil;
+local playerNamesToCheck = {"arena1","arena2","arena3"};
+for index,value in pairs(playerNamesToCheck) do
+
+if (UnitName(playerNamesToCheck[index]) ~= nil and UnitName(spellCaster) == UnitName(playerNamesToCheck[index])) then
+
+enemyArenaIndex = index;
+end
+end
+
+
+for index,value in pairs(spellNamesToCheck) do
+if (spellName == value--[[and enemyArenaIndex ~= nil]]) then
+print("|cffffaa00" .. spellCaster .. " is casting " .. spellColors[index] .. spellName .. "|cff000000" .. time());
+end
+end--end for
+
+
+end--end if isArena
+
+
+
+
+end--end function CustomSteven:UNIT_SPELLCAST_START
 
 
 function isKickBotting(name)
@@ -276,6 +572,22 @@ end--end function loadKickbotFrame
 --this is called after the variables are loaded
 function CustomStevenInit()
 
+local please = {[1]=1,[2]=2,[3]=3};
+for i,v in pairs(please) do
+CreateFrame("FRAME","numberlabel" .. i,_G["GladiusHealthBararena" .. i]);
+_G["numberlabel" .. i]:SetAllPoints();
+_G["numberlabel" .. i].t = _G["numberlabel" .. i]:CreateFontString(nil,"HIGH","GameFontNormal");
+_G["numberlabel" .. i].t:SetTextColor(1,0.643,0.169,1);
+_G["numberlabel" .. i].t:SetFont("Fonts\\FRIZQT__.TTF",
+		600/13, "OUTLINE, MONOCHROME");
+
+_G["numberlabel" .. i].t:SetShadowOffset(2,-1);
+_G["numberlabel" .. i].t:SetPoint("CENTER");
+_G["numberlabel" .. i].t:SetText("REEEE");
+_G["numberlabel" .. i]:Hide();
+end
+
+SetCVar("cameraDistanceMaxZoomFactor",2.6);
 StevenEventPlease:RegisterEvent("PARTY_INVITE_REQUEST");
 StevenEventPlease:RegisterEvent("UNIT_SPELLCAST_CHANNEL_START");
 StevenEventPlease:RegisterEvent("UNIT_SPELLCAST_START");
